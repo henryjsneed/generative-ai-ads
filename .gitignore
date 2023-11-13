@@ -1,2 +1,5 @@
 trained_model.pt
 api.key
+*.pkl
+*.cpy
+*.pyc
