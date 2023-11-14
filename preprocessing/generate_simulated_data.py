@@ -52,6 +52,13 @@ def simulate_user_behaviour(n_users, impressions_per_user, ad_features):
         for _ in range(impressions_per_user):
             ad_id, ad_info = select_random_ad(ad_features)
             static_features = user_static_features[user_id]
+
+            # Check if user is over 50 and ad copy contains "buy one get one free"
+            age = static_features['age']
+            ad_copy = ad_info['ad_copy'].lower()
+            # ad_clicked = 1 if age > 50 and "buy one get one free" in ad_copy else 0
+            # ad_clicked = 1 if "buy one get one free" in ad_copy else 0
+            ad_clicked = 1 if age > 40 else 0
             user_data.append({
                 'user_id': user_id,
                 'ad_id': ad_id,
@@ -61,16 +68,20 @@ def simulate_user_behaviour(n_users, impressions_per_user, ad_features):
                 'browser': static_features['browser'],
                 'content_category': ad_info['category'],
                 'ad_copy': ad_info['ad_copy'],
-                'product_type': ad_info['product_type']
+                'product_type': ad_info['product_type'],
+                'ad_clicked': ad_clicked  # updated
             })
     return user_data
+
+# Rest of your script remains the same
 
 
 np.random.seed(0)
 random.seed(0)
 n_users = 1000
 impressions_per_user = 10
-content_categories = ['technology', 'fashion', 'sports', 'entertainment', 'automotive', 'travel']
+content_categories = ['technology', 'fashion',
+                      'sports', 'entertainment', 'automotive', 'travel']
 ad_types = ['video', 'banner', 'sidebar', 'pop-up']
 device_types = ['mobile', 'tablet', 'desktop']
 times_of_day = ['morning', 'afternoon', 'evening', 'night']
@@ -82,7 +93,8 @@ historical_ad_categories = ['technology',
 browsers = ['Chrome', 'Firefox', 'Safari', 'Edge']
 product_types = ['electronics', 'clothing',
                  'software', 'home', 'beauty', 'books']
-geographical_locations = ['North America', 'Europe', 'Asia', 'South America', 'Africa']
+geographical_locations = ['North America',
+                          'Europe', 'Asia', 'South America', 'Africa']
 
 ad_copies = load_ad_copies("data/ad_copy.json")
 ad_features = generate_ad_features(ad_copies)
@@ -97,8 +109,10 @@ df = pd.DataFrame(user_behavior_data)
 df['ad_type'] = generate_categorical_values(ad_types, len(df))
 df['time_of_day'] = generate_categorical_values(times_of_day, len(df))
 df['day_of_week'] = generate_categorical_values(days_of_week, len(df))
-df['interaction_type'] = generate_categorical_values(interaction_types, len(df))
-df['historical_ad_category'] = generate_categorical_values(historical_ad_categories, len(df))
+df['interaction_type'] = generate_categorical_values(
+    interaction_types, len(df))
+df['historical_ad_category'] = generate_categorical_values(
+    historical_ad_categories, len(df))
 df['site_visit_duration'] = np.random.exponential(10, len(df))
 df['ads_clicked_this_session'] = np.random.poisson(3, len(df))
 df['time_spent_on_ad'] = np.random.normal(10, 5, len(df))
@@ -106,6 +120,5 @@ df['pages_visited_this_session'] = np.random.poisson(5, len(df))
 df['ads_viewed_last_month'] = np.random.poisson(20, len(df))
 df['avg_time_spent_on_clicked_ads'] = np.random.normal(15, 5, len(df))
 df['site_visit_frequency'] = np.random.gamma(2, 2, len(df))
-df['ad_clicked'] = np.random.randint(0, 2, len(df))
 
 df.to_csv('data/simulated_ad_click_data.csv', index=False)

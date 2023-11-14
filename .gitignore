@@ -3,3 +3,7 @@ api.key
 *.pkl
 *.cpy
 *.pyc
+src/__pycache__/
+data/validation/validation_data.csv
+data/validation/train_data.csv
+data/validation/test_data.csv
