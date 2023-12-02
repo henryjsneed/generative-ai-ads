@@ -5,7 +5,6 @@ from sklearn.preprocessing import LabelEncoder
 import ad_copy_util
 import pickle
 import json
-import numpy as np
 
 
 def generate_offsets_and_indices(x_cat_tensor):
@@ -143,9 +142,8 @@ def generate_offsets_and_indices_per_feature(x_cat_tensor):
 
 
 def fit_and_save_scaler(data, scaler_path):
-    data_array = np.array(data)
     scaler = MinMaxScaler()
-    scaler.fit(data_array)
+    scaler.fit(data)
     with open(scaler_path, 'wb') as file:
         pickle.dump(scaler, file)
     return scaler
@@ -155,35 +153,6 @@ def load_and_transform_scaler(data, scaler_path):
     with open(scaler_path, 'rb') as file:
         scaler = pickle.load(file)
     return scaler.transform(data)
-
-# def fit_and_save_scaler(continuous_fields, df_train, scaler_path='scaler.pkl'):
-#     scaler = MinMaxScaler()
-
-#     # scaler = StandardScaler()
-# # df['age'] = scaler.fit_transform(df[['age']])
-# # joblib.dump(scaler, 'model_artifacts/scaler.joblib')
-
-#     df_train_continuous = df_train[continuous_fields]
-#     scaler.fit(df_train_continuous.values)
-
-#     with open(scaler_path, 'wb') as file:
-#         pickle.dump(scaler, file)
-
-#     return scaler
-
-
-# def load_and_transform_scaler(continuous_fields, df, scaler_path='scaler.pkl'):
-#     # this loads the saved scaler
-#     with open(scaler_path, 'rb') as file:
-#         scaler = pickle.load(file)
-
-#     # transforms the dataset
-#     df_continuous = df[continuous_fields]
-#     scaled_values = scaler.transform(df_continuous.values)
-#     scaled_columns = {f"{field}_scaled": values for field,
-#                       values in zip(continuous_fields, scaled_values.T)}
-
-#     return pd.DataFrame(scaled_columns)
 
 
 def scale(continuous_fields, df):
@@ -199,7 +168,7 @@ def scale(continuous_fields, df):
     return pd.DataFrame(continuous_columns)
 
 
-def generate_all_embeddings(ad_copy_file, model, tokenizer, device, batch_size):
+def generate_all_embeddings(ad_copy_file, model, tokenizer, device):
     with open(ad_copy_file, 'r') as file:
         ad_copy_data = json.load(file)
 
@@ -212,7 +181,7 @@ def generate_all_embeddings(ad_copy_file, model, tokenizer, device, batch_size):
         ad_copy_embeddings_dict[ad_copy] = ad_copy_util.generate_text_embeddings(
             [ad_copy], model, tokenizer, device)
 
-    with open('model_artifacts/ad_copy_embeddings.pkl', 'wb') as file:
+    with open('ad_copy_embeddings.pkl', 'wb') as file:
         pickle.dump(ad_copy_embeddings_dict, file)
 
     return ad_copy_embeddings_dict
