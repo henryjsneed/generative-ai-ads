@@ -65,7 +65,7 @@ def simulate_user_behaviour(n_users, impressions_per_user, ad_features):
             age = static_features['age']
             ad_copy = ad_info['ad_copy'].lower()
             ad_clicked = 1 if (age > 30 and "buy one get one free" in ad_copy) or (
-                age < 30 and "yeet" in ad_copy) else 0
+                age < 30 and "flash-sale" in ad_copy) else 0
             user_data.append({
                 'user_id': user_id,
                 'ad_id': ad_id,

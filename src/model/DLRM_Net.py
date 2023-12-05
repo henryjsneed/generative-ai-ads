@@ -13,7 +13,6 @@ class DLRM_Net(nn.Module):
             nn.ReLU()
         )
 
-        # Embedding layers for categorical features
         self.emb_l = nn.ModuleList([nn.Embedding(num_embeddings, 2) for num_embeddings in cat_embedding_sizes])
 
         # Top MLP
@@ -27,14 +26,11 @@ class DLRM_Net(nn.Module):
         )
 
     def forward(self, x_dense, x_cat):
-        # Process continuous features
         x_dense = self.bot_l(x_dense)
 
-        # Process categorical features
         x_cat = [emb(x_cat[:, i].long()) for i, emb in enumerate(self.emb_l)]
         x_cat = torch.cat(x_cat, dim=1)
 
-        # Combine
         x = torch.cat([x_dense, x_cat], dim=1)
 
         # Top MLP
