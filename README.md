@@ -15,3 +15,5 @@ the issue of repetitive ads since new ad copy can be generated for each new ad i
 Facebook DLRM to recommend content informed by textual
 data, this work validates the viability of the proposed ad
 technology application.
+
+The code for the training and testing of the model are located in **src/train_dlrm.ipynb** and **src/test_dlrm.ipynb**, respectively.
